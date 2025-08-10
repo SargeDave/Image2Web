@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
               // Signed in
               closeLogin();
               firebase.analytics().logEvent('login', { method: 'google' });
-              alert('Logged in with Google!');
+              window.location.href = 'workspace.html';
             })
             .catch((error) => {
               alert('Google Sign-In Error: ' + error.message);
@@ -189,11 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("User logged in:", user);
             // Close login modal
             closeLogin();
-            // You can update the UI here to show logged-in state
-            // and potentially redirect the user
-            // Log login event to Firebase Analytics
             firebase.analytics().logEvent('login', { method: 'email_password' });
-            alert("Logged in successfully!");
+            window.location.href = 'workspace.html';
           })
           .catch((error) => {
             const errorCode = error.code;
