@@ -39,6 +39,32 @@
       transition: background 0.2s, color 0.2s;
       outline: none;
     }
+
+    .sidebar {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5em;
+      margin: 1em 0;
+      box-shadow: 0 2px 8px rgba(30,41,59,0.04);
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 1.5em;
+      color: #1e293b;
+    }
+    .sidebar-item {
+      display: block;
+      padding: 0.75em 1.5em;
+      margin: 0.5em 0;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #0ea5e9;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar-item:hover {
+      background: #0ea5e9;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -64,6 +90,9 @@
           </li>
           <li class="nav-item" onclick="window.location.href='contributors.html'">
             <button class="nav-btn">Contributors</button>
+          </li>
+          <li class="nav-item" id="workspace-link" style="display: none;" onclick="window.location.href='workspace.html'">
+            <button class="nav-btn">Workspace</button>
           </li>
           <li class="nav-item" id="auth-links">
             <button class="nav-btn" onclick="openLogin()">Login</button>
@@ -104,6 +133,7 @@
         </div>
       </div>
     </section>
+  <!-- Workspace button moved to top nav -->
   </main>
   <!-- Sign-up Modal -->
   <div class="signup-modal" id="signupModal">
@@ -228,5 +258,13 @@
   <button id="nav-toggle" aria-label="Open navigation" style="display:none;">
     &#9776;
   </button>
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <a href="index.html" class="sidebar-item">🏠 Home</a>
+    <a href="contributors.html" class="sidebar-item">👥 Contributors</a>
+    <a href="about.html" class="sidebar-item">ℹ️ About</a>
+    <!-- Add the Workspace button below, matching the style -->
+    <a href="workspace.html" class="sidebar-item">🛠️ Workspace</a>
+  </div>
 </body>
 </html>

@@ -355,6 +355,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById("auth-links").style.display = "none";
     document.getElementById("user-links").style.display = "list-item";
+    document.getElementById("workspace-link").style.display = "list-item";
     // Always fetch username from Firestore and display it
     firebase.firestore().collection("users").doc(user.uid).get().then(doc => {
       if (doc.exists && doc.data().username) {
@@ -370,6 +371,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   } else {
     document.getElementById("auth-links").style.display = "list-item";
     document.getElementById("user-links").style.display = "none";
+    document.getElementById("workspace-link").style.display = "none";
     greetingDiv.style.display = "none";
   }
 });
