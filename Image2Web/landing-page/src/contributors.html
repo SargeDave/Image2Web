@@ -1,6 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+    /* Hamburger styles for mobile */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #38bdf8;
+      position: absolute;
+      right: 1.5rem;
+      top: 1.5rem;
+      z-index: 2001;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: #12002f;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100vw;
+        padding: 1rem 0;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        z-index: 2000;
+      }
+      nav ul.open {
+        display: flex;
+      }
+      .nav-toggle {
+        display: block;
+      }
+    }
+  </style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contributors - CODE4WEB</title>
@@ -9,6 +44,7 @@
 </head>
 <body>
   <header>
+    <button class="nav-toggle" id="navToggle" aria-label="Open navigation">&#9776;</button>
     <div class="logo">
       <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="8" y="8" width="16" height="16" rx="4" fill="#38BDF8"/>
@@ -44,5 +80,21 @@
   </main>
 
   <script src="script.js"></script>
+<script>
+// Hamburger menu logic for mobile
+const navToggle = document.getElementById('navToggle');
+const navUl = document.querySelector('nav ul');
+if (navToggle && navUl) {
+  navToggle.addEventListener('click', function() {
+    navUl.classList.toggle('open');
+  });
+  // Optional: close menu when clicking a nav item (for better UX)
+  navUl.querySelectorAll('li').forEach(function(item) {
+    item.addEventListener('click', function() {
+      navUl.classList.remove('open');
+    });
+  });
+}
+</script>
 </body>
 </html>
