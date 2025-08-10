@@ -103,6 +103,7 @@
   </style>
 </head>
 <body>
+  <button id="mobileModeToggle" style="position:fixed;top:1rem;right:1rem;z-index:3000;padding:0.5rem 1rem;border-radius:8px;border:none;background:#38bdf8;color:#fff;font-weight:bold;cursor:pointer;">Enable Mobile Mode</button>
   <header>
   <button class="nav-toggle" id="navToggle" aria-label="Open navigation">&#9776;</button>
   <div class="header-content">
@@ -296,6 +297,22 @@
     firebase.analytics();
   </script>
   <script src="script.js" defer></script>
+<script>
+// Mobile Mode toggle logic
+const mobileBtn = document.getElementById('mobileModeToggle');
+const htmlEl = document.documentElement;
+let mobileMode = false;
+mobileBtn.onclick = function() {
+  mobileMode = !mobileMode;
+  if (mobileMode) {
+    htmlEl.classList.add('mobile-mode');
+    mobileBtn.textContent = 'Disable Mobile Mode';
+  } else {
+    htmlEl.classList.remove('mobile-mode');
+    mobileBtn.textContent = 'Enable Mobile Mode';
+  }
+};
+</script>
 <script>
 // Hamburger menu logic for mobile
 const navToggle = document.getElementById('navToggle');

@@ -1,41 +1,47 @@
 /* Mobile-specific styles for Image2Web */
 
-@media (max-width: 768px) {
-  body {
-    font-size: 1.05rem;
-    padding: 0;
-    margin: 0;
-  }
-  header, .logo, nav, .hero, .hero-content, .sidebar, .workspace-container, .workspace-main {
-    width: 100% !important;
-    max-width: 100vw !important;
-    box-sizing: border-box;
-  }
-  nav ul {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  .nav-btn, .sidebar-item {
-    width: 100%;
-    text-align: left;
-    font-size: 1.1rem;
-    padding: 1rem 0.5rem;
-  }
-  .hero-title {
-    font-size: 2rem;
-    text-align: center;
-  }
-  .workspace-content {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-  }
-  .upload-area {
-    min-height: 180px !important;
-  }
-  .footer-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
+.mobile-mode body {
+  font-size: 1.05rem;
+  padding: 0;
+  margin: 0;
+}
+.mobile-mode header,
+.mobile-mode .logo,
+.mobile-mode nav,
+.mobile-mode .hero,
+.mobile-mode .hero-content,
+.mobile-mode .sidebar,
+.mobile-mode .workspace-container,
+.mobile-mode .workspace-main {
+  width: 100% !important;
+  max-width: 100vw !important;
+  box-sizing: border-box;
+}
+.mobile-mode nav ul {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.mobile-mode .nav-btn,
+.mobile-mode .sidebar-item {
+  width: 100%;
+  text-align: left;
+  font-size: 1.1rem;
+  padding: 1rem 0.5rem;
+}
+.mobile-mode .hero-title {
+  font-size: 2rem;
+  text-align: center;
+}
+.mobile-mode .workspace-content {
+  grid-template-columns: 1fr !important;
+  gap: 1rem !important;
+}
+.mobile-mode .upload-area {
+  min-height: 180px !important;
+}
+.mobile-mode .footer-content {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
 }
