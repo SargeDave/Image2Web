@@ -1,184 +1,895 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Image2Web - Workspace</title>
-  <!-- Main landing-page style -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Your personal workspace on Image2Web. Manage your projects and conversions here. Designed by SeroTech.">
+  <title>CODE4WEB - Your Workspace</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Workspace-specific style -->
-  <link rel="stylesheet" href="workspace-style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <style>
+    /* Optional: Add a simple loading state or hidden content if you want to prevent flicker */
+    body {
+      opacity: 0;
+      /* Hide body initially */
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    body.loaded {
+      opacity: 1;
+      /* Show body once authentication check is done */
+    }
+
+    .access-denied-message {
+      display: none;
+      /* Hidden by default */
+      text-align: center;
+      margin-top: 50px;
+      font-size: 1.5em;
+      color: var(--danger-red);
+      /* Assuming you have a danger-red variable */
+      padding: 30px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background-color: var(--modal-content-bg);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .access-denied-message h2 {
+      color: var(--primary-blue);
+      margin-bottom: 15px;
+    }
+
+    .access-denied-message p {
+      margin-bottom: 25px;
+      color: var(--text-primary);
+    }
+
+    .access-denied-message .hero-btn {
+      padding: 10px 30px;
+      font-size: 1em;
+      border-radius: 50px;
+    }
+
+
+    /* Widget Styles - If these are global and not already in style.css */
+    .widget {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 1em;
+      margin: 1em 0;
+      box-shadow: 0 2px 8px rgba(30, 41, 59, 0.04);
+    }
+
+    .widget h3 {
+      margin-top: 0;
+    }
+
+    #todo-list li.done {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    /* Override for active nav button on this page (header nav) */
+    /* I'm keeping this commented out as per our previous discussion to let global style.css rule apply
+      for solid background. If you want a border, uncomment and adjust. */
+    /* .nav-item.active .nav-btn { */
+    /* border: 2px solid #0ea5e9; */
+    /* background: transparent; */
+    /* color: #0ea5e9; */
+    /* } */
+
+    /* General Layout for Workspace Page (copied from previous response) */
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex-grow: 1;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    .sidebar {
+      width: 250px;
+      min-width: 200px;
+      background: var(--modal-content-bg);
+      padding: 20px;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 15px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
+    }
+
+    .sidebar-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-nav li a,
+    .logout-btn {
+      display: block;
+      padding: 10px 15px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.2s ease, color 0.2s ease;
+      font-size: 1.1em;
+    }
+
+    .sidebar-nav li a:hover,
+    .logout-btn:hover {
+      background: rgba(var(--primary-blue), 0.1);
+      color: var(--primary-blue);
+    }
+
+    .sidebar-nav li.active a {
+      background: var(--primary-blue);
+      color: var(--button-text);
+      font-weight: bold;
+    }
+
+    .sidebar-user {
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+
+    .sidebar-user p {
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .main-content-area {
+      flex-grow: 1;
+      padding: 20px 40px;
+      background: var(--background-light);
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* Workspace-specific content containers */
+    .workspace-section-card {
+      background: var(--modal-content-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .workspace-section-card h2 {
+      font-family: 'Russo One', sans-serif;
+      color: var(--primary-blue);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      text-align: center;
+      /* Center the title */
+    }
+
+    /* Input and Select Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      background-color: var(--input-bg);
+      color: var(--text-primary);
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      font-size: 1em;
+      resize: vertical;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.4L146.2%20227.3%2018.8%2074.8c-2.9-3-6.4-4.6-10.9-4.6A17.6%2017.6%200%200%200%200%2080.2V212.1c0%203.9%201.5%207.4%204.6%2010.9L146.2%20272.7l141.6-141.6c3-3.5%204.6-7%204.6-10.9V80.2c0-4.5-1.5-8-4.6-10.9z%22%2F%3E%3C%2Fsvg%3E');
+      background-repeat: no-repeat;
+      background-position: right 10px top 50%;
+      background-size: 12px auto;
+    }
+
+    /* Image Upload Area */
+    .image-upload-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1.5rem;
+      border: 2px dashed var(--primary-blue);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      min-height: 150px;
+      justify-content: center;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .image-upload-area.drag-over {
+      background-color: rgba(56, 189, 248, 0.1);
+      border-color: var(--secondary-blue);
+    }
+
+    .upload-label {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background: var(--primary-blue);
+      color: var(--button-text);
+      border-radius: 50px;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .upload-label:hover {
+      background: var(--secondary-blue);
+      transform: translateY(-2px);
+    }
+
+    #imagePreview {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 10px;
+      margin-top: 1rem;
+      object-fit: contain;
+      border: 1px solid var(--border-color);
+      display: none;
+    }
+
+    /* Code Inspector Area */
+    .code-inspector-section {
+      background: var(--modal-content-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .code-inspector-section h2 {
+      font-family: 'Russo One', sans-serif;
+      color: var(--primary-blue);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      text-align: center;
+      /* Center the title */
+    }
+
+    .code-display {
+      background-color: var(--input-bg);
+      color: var(--text-primary);
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.9em;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      min-height: 200px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1px solid var(--border-color);
+    }
+
+    .code-display.empty-state {
+      color: var(--text-secondary);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .download-code-btn {
+      background: var(--tertiary-blue);
+      color: var(--button-text);
+      padding: 10px 20px;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .download-code-btn:hover {
+      background: #0ea5e9;
+      transform: translateY(-2px);
+    }
+
+    /* Media Queries for Responsive Layout */
+    @media (max-width: 900px) {
+      .main-wrapper {
+        flex-direction: column;
+        padding-top: 0;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 15px 20px;
+      }
+
+      .sidebar-nav ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .sidebar-nav li a {
+        padding: 8px 12px;
+        font-size: 1em;
+      }
+
+      .sidebar-user {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .main-content-area {
+        padding: 20px;
+        border-radius: 0;
+        max-width: 100%;
+      }
+
+      .workspace-section-card {
+        padding: 20px;
+      }
+
+      .workspace-section-card h2 {
+        font-size: 1.5em;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-content-area {
+        width: 100%;
+        margin-top: 0;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="workspace-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <h2>Image2Web</h2>
-      <div class="sidebar-section">
-        <h3>Navigation</h3>
-        <a href="index.html" class="sidebar-item">🏠 Back to Home</a>
-    <a href="workspace.html" class="sidebar-item active">Workspace</a>
-      </div>
-
-      <div class="user-profile">
-        <div class="avatar">U</div>
-        <div class="user-info">
-          <h4>Username</h4>
-          <p>Pro User</p>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="16" height="16" rx="4" fill="#38BDF8" />
+          <rect x="32" y="8" width="16" height="16" rx="4" fill="#0EA5E9" />
+          <rect x="20" y="32" width="16" height="16" rx="4" fill="#06B6D4" />
+          <rect x="20" y="20" width="16" height="16" rx="4" fill="#1E293B" />
+        </svg>
+        <div>
+          <span class="brand">CODE4WEB</span>
+          <div class="slogan">Designed by SeroTech</div>
         </div>
-        <button class="logout-btn">Logout</button>
       </div>
-    </aside>
-
-    <!-- Main Workspace -->
-    <main class="workspace-main">
-      <div class="workspace-header">
-        <h1 class="workspace-title">Workspace</h1>
-        <p class="workspace-subtitle">Transform your wireframes into beautiful, functional code</p>
+      <nav>
+        <ul>
+          <li class="nav-item" data-page="home" onclick="window.location.href='index.html'">
+            <button class="nav-btn">Home</button>
+          </li>
+          <li class="nav-item" data-page="contributors" onclick="window.location.href='contributors.html'">
+            <button class="nav-btn">Contributors</button>
+          </li>
+          <li class="nav-item active" data-page="workspace" onclick="window.location.href='workspace.html'">
+            <button class="nav-btn">Workspace</button>
+          </li>
+          <li class="nav-item" id="auth-links">
+            <button class="nav-btn" onclick="openLogin()">Login</button>
+          </li>
+          <li class="nav-item" id="user-links" style="display: none;">
+            <button class="nav-btn" onclick="logout()">Logout</button>
+          </li>
+        </ul>
+      </nav>
+      <div id="user-greeting">
+        Hi, <span id="user-name"></span>
       </div>
+    </div>
+  </header>
 
-      <div class="workspace-content">
-        <!-- Upload Section -->
-        <div class="upload-section">
-          <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📁</div>
-            <div class="upload-text">Upload Wireframe Here</div>
-            <div class="upload-hint">Drag and drop your wireframe image or click to browse</div>
-            <input type="file" class="file-input" id="fileInput" accept="image/*" />
-          </div>
-          
-          <div class="uploaded-file" id="uploadedFile">
-            <div class="file-info">
-              <img class="file-preview" id="filePreview" alt="Preview" />
-              <div class="file-details">
-                <h4 id="fileName">wireframe.png</h4>
-                <p id="fileSize">2.4 MB</p>
-              </div>
-              <button class="remove-file" id="removeFile">×</button>
-            </div>
-          </div>
+  <div id="workspace-authorized-content" style="display: none;">
+    <div class="main-wrapper">
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <ul>
+            <li data-page="previous-designs"><a href="previous_designs.html">Previous Designs</a></li>
+            <li class="active" data-page="workspace"><a href="workspace.html">Workspace</a></li>
+            <li data-page="contributors"><a href="contributors.html">Contributors</a></li>
+          </ul>
+        </nav>
+        <div class="sidebar-user">
+          <p>Username: <span id="sidebar-username">Guest</span></p>
+          <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
+      </aside>
 
-        <!-- Configuration Section -->
-        <div class="config-section">
+      <main class="main-content-area">
+        <section class="workspace-section-card">
+          <h2>Generate Code from Wireframe</h2>
+
           <div class="form-group">
-            <label for="modelSelect">Select Model</label>
-            <select class="model-select" id="modelSelect">
-              <option value="gemini">Gemini Google</option>
-              <option value="claude">Claude AI</option>
-              <option value="gpt4">GPT-4</option>
-              <option value="gpt3">GPT-3.5</option>
+            <label for="selectModel">Select Model</label>
+            <select id="selectModel">
+              <option value="gemini-google">Gemini Google</option>
+              <option value="openai-gpt4o">OpenAI GPT-4o</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="description">Description of your website</label>
-            <textarea
-              class="description-textarea"
-              id="description"
-              placeholder="Describe your website's purpose, target audience, key features, and any specific requirements. The more detailed your description, the better the generated code will match your vision."
-            ></textarea>
+            <label for="websiteDescription">Description of your website</label>
+            <textarea id="websiteDescription" rows="5"
+              placeholder="e.g., A minimalist portfolio website for a graphic designer, with a dark theme and subtle animations."></textarea>
           </div>
 
-          <button class="generate-btn" id="generateBtn" disabled>
-            <span class="btn-text">Generate Code!</span>
-          </button>
-        </div>
-      </div>
-    </main>
+          <div class="image-upload-area" id="dropArea">
+            <label for="imageUpload" class="upload-label">
+              <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path
+                  d="M10 2a.75.75 0 01.75.75v6.5h6.5a.75.75 0 010 1.5h-6.5v6.5a.75.75 0 01-1.5 0v-6.5h-6.5a.75.75 0 010-1.5h6.5v-6.5A.75.75 0 0110 2z">
+                </path>
+              </svg>
+              Upload Wireframe Here
+            </label>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            <img id="imagePreview" src="#" alt="Image Preview" style="display: none;">
+            <p id="fileName"></p>
+          </div>
+
+          <button id="generateCodeBtn" class="workspace-cta-btn" style="margin-top: 1rem;">Generate Code!</button>
+          <p id="statusMessage"></p>
+        </section>
+
+        <section class="workspace-section-card code-inspector-section">
+          <h2>Inspector</h2>
+          <div id="codeDisplay" class="code-display empty-state">
+            <p>Generated code will appear here.</p>
+          </div>
+          <button id="saveHtmlBtn" class="download-code-btn" style="display: none;">Save as HTML file</button>
+        </section>
+      </main>
+    </div>
   </div>
 
+  <div class="access-denied-message" id="accessDeniedMessage">
+    <h2>Access Denied</h2>
+    <p>Please log in to access your workspace. You will be redirected to the home page shortly.</p>
+    <button class="hero-btn" onclick="openLogin()">Login Now</button>
+  </div>
+
+
+  <div class="signup-modal" id="signupModal">
+    <div class="signup-content">
+      <button class="close-btn" onclick="closeSignup()">&times;</button>
+      <form id="signupForm" class="signup-form">
+        <h2>Join Image2Web</h2>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="signup-username" name="username" type="text" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="signup-email" name="email" type="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="signup-password" name="password" type="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="signup-btn" style="width: 100%; margin: 0;">
+          Create Account
+        </button>
+        <div class="success-message" id="successMessage" style="display:none;">
+          <h3>🎉 Welcome to CODE4WEB!</h3>
+          <p>Your account has been created successfully.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="login-modal" id="loginModal">
+    <div class="login-content">
+      <button class="close-btn" onclick="closeLogin()">&times;</button>
+      <form class="login-form" id="loginForm">
+        <h2 class="login-title">Login to Image2Web</h2>
+        <div class="form-group">
+          <label for="login-username">Email</label>
+          <input type="email" id="login-username" name="login-username" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" name="login-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="login-btn" style="width: 100%; margin: 0;">
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="about-modal" id="aboutModal">
+    <div class="about-content">
+      <button class="close-btn" onclick="closeAbout()">&times;</button>
+      <h2 class="about-title">About Image2Web</h2>
+      <p class="about-text">
+        Image2Web is a project dedicated to transforming wireframes into beautiful, responsive websites with ease. Our
+        mission is to empower developers and designers to bring their ideas to life faster and more efficiently.
+      </p>
+      <p class="about-text">
+        <strong>Team:</strong> Moyano, Sarge Dave M. • Mallari, Merick Joshua • Quiambao, Christian Joshua • Dizon,
+        Robby
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 class="footer-title">About Image2Web</h3>
+        <p class="footer-text">
+          Image2Web is a tool that helps you turn your wireframes and images into real, responsive websites in seconds.
+          Built for developers and designers by SeroTech.
+        </p>
+        <div class="social-links">
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3 class="footer-title">Quick Links</h3>
+        <a href="#" class="footer-link" onclick="window.location.href='index.html'">Home</a>
+        <a href="#" class="footer-link" onclick="openAbout(); return false;">About</a>
+        <a href="#" class="footer-link">Blog</a>
+      </div>
+      <div class="footer-section">
+        <a href="#" class="footer-link">Documentation</a>
+        <a href="#" class="footer-link">Tutorials</a>
+      </div>
+      <div class="footer-section">
+        <h3 class="footer-title">Contact</h3>
+        <p class="footer-text">📧 our email</p>
+        <p class="footer-text">📍 A Wireframe to Website Generator</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-text">&copy; 2025 Image2Web. All rights reserved. | Crafted with ❤️ for developers</p>
+    </div>
+  </footer>
+
+  <div id="loading-spinner"
+    style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2000;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);">
+    <div
+      style="border:8px solid #eee;border-top:8px solid #0ea5e9;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;">
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
   <script>
-    // Workspace-specific logic
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    const uploadedFile = document.getElementById('uploadedFile');
-    const filePreview = document.getElementById('filePreview');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    const removeFile = document.getElementById('removeFile');
-    const generateBtn = document.getElementById('generateBtn');
-    const description = document.getElementById('description');
-    const modelSelect = document.getElementById('modelSelect');
+    const firebaseConfig = {
+      apiKey: "AIzaSyDA9TT-iCH515H63y-4zJkTJ1tZAOU7m60",
+      authDomain: "image2web-1a6c0.firebaseapp.com",
+      projectId: "image2web-1a6c0",
+      storageBucket: "image2web-1a6c0.appspot.com",
+      messagingSenderId: "167811907825",
+      appId: "1:167811907825:web:809c410fefc52de3542950",
+      measurementId: "G-LF3Y1S5M47"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
 
-    let currentFile = null;
-
-    uploadArea.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) handleFileUpload(file);
-    });
-    uploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea.classList.add('drag-over');
-    });
-    uploadArea.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('drag-over');
-    });
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('drag-over');
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) handleFileUpload(file);
-    });
-    function handleFileUpload(file) {
-      currentFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        filePreview.src = e.target.result;
-        fileName.textContent = file.name;
-        fileSize.textContent = formatFileSize(file.size);
-        uploadedFile.classList.add('show');
-        updateGenerateButton();
-      };
-      reader.readAsDataURL(file);
-    }
-    removeFile.addEventListener('click', () => {
-      currentFile = null;
-      uploadedFile.classList.remove('show');
-      fileInput.value = '';
-      updateGenerateButton();
-    });
-    description.addEventListener('input', updateGenerateButton);
-    function updateGenerateButton() {
-      generateBtn.disabled = !(currentFile && description.value.trim().length > 0);
-    }
-    generateBtn.addEventListener('click', () => {
-      if (currentFile && description.value.trim()) generateCode();
-    });
-    function generateCode() {
-      const btn = generateBtn;
-      const btnText = btn.querySelector('.btn-text');
-      btn.classList.add('loading');
-      btn.disabled = true;
-      btnText.textContent = 'Generating...';
-      setTimeout(() => {
-        btn.classList.remove('loading');
-        btn.disabled = false;
-        btnText.textContent = 'Generate Code!';
-        alert('Code generated successfully! (This is a demo)');
-        console.log('File:', currentFile);
-        console.log('Description:', description.value);
-        console.log('Model:', modelSelect.value);
-      }, 3000);
-    }
-    function formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes';
-      const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    // Helper functions for modals (assuming they are in script.js or a global scope)
+    function openLogin() {
+      document.getElementById('loginModal').classList.add('active');
     }
 
-    // Connect logout button to shared logout logic if available
-    const logoutBtn = document.querySelector('.logout-btn');
-    if (logoutBtn && typeof logout === 'function') {
-      logoutBtn.addEventListener('click', logout);
+    function closeLogin() {
+      document.getElementById('loginModal').classList.remove('active');
     }
+
+    function openSignup() {
+      document.getElementById('signupModal').classList.add('active');
+    }
+
+    function closeSignup() {
+      document.getElementById('signupModal').classList.remove('active');
+    }
+
+    function openAbout() {
+      document.getElementById('aboutModal').classList.add('active');
+    }
+
+    function closeAbout() {
+      document.getElementById('aboutModal').classList.remove('active');
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        console.log("User logged out");
+        window.location.href = 'index.html'; // Redirect to home after logout
+      }).catch((error) => {
+        console.error("Logout Error:", error);
+        alert("Logout failed: " + error.message);
+      });
+    }
+
+    // Workspace Functionality JavaScript
+    document.addEventListener('DOMContentLoaded', () => {
+      const imageUpload = document.getElementById('imageUpload');
+      const imagePreview = document.getElementById('imagePreview');
+      const fileNameDisplay = document.getElementById('fileName');
+      const generateCodeBtn = document.getElementById('generateCodeBtn');
+      const statusMessage = document.getElementById('statusMessage');
+      const loadingSpinner = document.getElementById('loading-spinner');
+      const selectModel = document.getElementById('selectModel');
+      const websiteDescription = document.getElementById('websiteDescription');
+      const codeDisplay = document.getElementById('codeDisplay');
+      const saveHtmlBtn = document.getElementById('saveHtmlBtn');
+      const sidebarUsernameSpan = document.getElementById('sidebar-username');
+
+      const workspaceAuthorizedContent = document.getElementById('workspace-authorized-content');
+      const accessDeniedMessage = document.getElementById('accessDeniedMessage');
+      const body = document.body;
+
+      // Initial state: hide authorized content and access denied message
+      workspaceAuthorizedContent.style.display = 'none';
+      accessDeniedMessage.style.display = 'none';
+
+      // Firebase Authentication Check
+      firebase.auth().onAuthStateChanged(user => {
+        const authLinks = document.getElementById('auth-links');
+        const userLinks = document.getElementById('user-links');
+        const userGreeting = document.getElementById('user-greeting');
+        const userNameSpan = document.getElementById('user-name');
+
+        if (user) {
+          // User is signed in. Allow access to workspace.
+          console.log("User is logged in:", user.email);
+          workspaceAuthorizedContent.style.display = 'flex'; // Show workspace content (assuming main-wrapper uses flex)
+          accessDeniedMessage.style.display = 'none'; // Hide access denied message
+
+          // Update header for logged-in user
+          authLinks.style.display = 'none';
+          userLinks.style.display = 'list-item';
+          userGreeting.style.display = 'block';
+          userNameSpan.textContent = user.displayName || user.email || 'User';
+          sidebarUsernameSpan.textContent = user.displayName || user.email || 'User';
+
+
+        } else {
+          // User is logged out. Show access denied message and redirect.
+          console.log("User is logged out. Access denied.");
+          workspaceAuthorizedContent.style.display = 'none'; // Hide workspace content
+          accessDeniedMessage.style.display = 'block'; // Show access denied message
+
+          // Update header for logged-out user
+          authLinks.style.display = 'list-item';
+          userLinks.style.display = 'none';
+          userGreeting.style.display = 'none';
+          userNameSpan.textContent = '';
+          sidebarUsernameSpan.textContent = 'Guest';
+
+          // Redirect to home page after a delay
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000); // Redirect after 2 seconds
+        }
+        body.classList.add('loaded'); // Ensure body becomes visible after auth check
+      });
+
+
+      // Drag and Drop functionality
+      const dropArea = document.getElementById('dropArea');
+
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
+      });
+
+      dropArea.addEventListener('drop', handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        imageUpload.files = files;
+        imageUpload.dispatchEvent(new Event('change'));
+      }
+
+      // Handle image file selection (from click or drag-drop)
+      imageUpload.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            fileNameDisplay.textContent = file.name;
+            statusMessage.textContent = '';
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.src = '#';
+          imagePreview.style.display = 'none';
+          fileNameDisplay.textContent = '';
+        }
+      });
+
+      // Handle Generate Code button click
+      generateCodeBtn.addEventListener('click', async () => {
+        if (!imageUpload.files || imageUpload.files.length === 0) {
+          statusMessage.textContent = 'Please select an image first.';
+          statusMessage.style.color = '#f5576c';
+          return;
+        }
+
+        const selectedModel = selectModel.value;
+        const description = websiteDescription.value.trim();
+
+        if (!description) {
+          statusMessage.textContent = 'Please provide a description of your website.';
+          statusMessage.style.color = '#f5576c';
+          return;
+        }
+
+        statusMessage.textContent = `Generating code using ${selectedModel}... This may take a moment.`;
+        statusMessage.style.color = '#ffe066';
+        loadingSpinner.style.display = 'flex';
+
+        const file = imageUpload.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('model', selectedModel);
+        formData.append('description', description);
+
+        try {
+          // Replace with your actual API endpoint for code generation
+          const response = await fetch('/api/generate-code', {
+            method: 'POST',
+            body: formData,
+            // headers: { 'Authorization': `Bearer ${YOUR_AUTH_TOKEN}` } // Add if authentication is needed
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+          }
+
+          const result = await response.json(); // Assuming backend returns JSON with 'htmlCode'
+
+          if (result && result.htmlCode) {
+            codeDisplay.innerHTML = `<pre><code>${escapeHtml(result.htmlCode)}</code></pre>`;
+            codeDisplay.classList.remove('empty-state');
+            saveHtmlBtn.style.display = 'block';
+            statusMessage.textContent = 'Code generated successfully! 🎉';
+            statusMessage.style.color = '#10b981';
+
+            // --- Save project to Firestore after successful generation ---
+            const user = firebase.auth().currentUser;
+            if (user) {
+              const db = firebase.firestore();
+              await db.collection('users').doc(user.uid).collection('projects').add({
+                name: file.name.split('.')[0] || 'Generated Design',
+                description: description,
+                modelUsed: selectedModel,
+                htmlCode: result.htmlCode, // You might store the code or a reference to it
+                // You might also upload the image to storage and save its URL here
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                websiteUrl: '#' // Placeholder, if you host generated sites, put URL here
+              });
+              console.log("Project saved to Firestore!");
+              // No need to call addProjectCard here, as previous_designs.html will load them.
+            } else {
+              console.warn("User not logged in, project not saved to Firestore.");
+            }
+
+          } else {
+            throw new Error('No HTML code received from the server.');
+          }
+
+        } catch (error) {
+          console.error('Code generation failed:', error);
+          codeDisplay.innerHTML = `<p style="color: var(--danger-red);">Error generating code: ${error.message}</p>`;
+          codeDisplay.classList.remove('empty-state');
+          saveHtmlBtn.style.display = 'none';
+          statusMessage.textContent = `Generation failed: ${error.message}. Please try again.`;
+          statusMessage.style.color = '#f5576c';
+        } finally {
+          loadingSpinner.style.display = 'none';
+        }
+      });
+
+      // Handle Save as HTML file button click
+      saveHtmlBtn.addEventListener('click', () => {
+        const generatedCode = codeDisplay.querySelector('code').textContent;
+        const blob = new Blob([generatedCode], {
+          type: 'text/html'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'generated_website.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // Helper function to escape HTML for display
+      function escapeHtml(html) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(html));
+        return div.innerHTML;
+      }
+
+      // Sidebar navigation active state (Client-side only)
+      const sidebarNavItems = document.querySelectorAll('.sidebar-nav li');
+      const currentPage = "workspace";
+      sidebarNavItems.forEach(item => {
+        if (item.dataset.page === currentPage) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    });
   </script>
-  <!-- Connect to shared navigation and logic -->
-  <script src="src/script.js"></script>
-</body>
+  <button id="nav-toggle" aria-label="Open navigation" style="display:none;">
+    &#9776;
+  </button>
+</body> 
 </html>
