@@ -37,7 +37,7 @@
       margin-left: 1em;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
-      outline: none;
+      outline: none;s
     }
 
     .sidebar {
@@ -181,6 +181,8 @@
         <button type="submit" class="login-btn" style="width: 100%; margin: 0;">
           Login
         </button>
+        <button type="button" class="forgot-btn" id="forgotPasswordBtn" style="width: 100%; margin-top: 0.5rem; background: none; color: #38bdf8; border: none; cursor: pointer; text-decoration: underline;">Forgot password?</button>
+        <div id="forgotMessage" style="display:none; color: #38bdf8; text-align:center; margin-top:0.5rem;"></div>
       </form>
     </div>
   </div>
@@ -258,13 +260,5 @@
   <button id="nav-toggle" aria-label="Open navigation" style="display:none;">
     &#9776;
   </button>
-  <div class="sidebar">
-    <h2>Menu</h2>
-    <a href="index.html" class="sidebar-item">🏠 Home</a>
-    <a href="contributors.html" class="sidebar-item">👥 Contributors</a>
-    <a href="about.html" class="sidebar-item">ℹ️ About</a>
-    <!-- Add the Workspace button below, matching the style -->
-    <a href="workspace.html" class="sidebar-item">🛠️ Workspace</a>
-  </div>
 </body>
 </html>

@@ -114,7 +114,7 @@
 .upload-area {
     flex: 1;
     min-height: 300px;
-    border: 2px dashed var(--glass-border);
+    border: 2.5px dashed #38bdf8;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
@@ -128,14 +128,14 @@
 }
 
 .upload-area:hover {
-    border-color: #4facfe;
-    background: rgba(79, 172, 254, 0.1);
+    border-color: #0ea5e9;
+    background: rgba(14, 165, 233, 0.08);
 }
 
 .upload-area.drag-over {
-    border-color: #00f2fe;
-    background: rgba(0, 242, 254, 0.1);
-    transform: scale(1.02);
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.08);
+    transform: scale(1.03);
 }
 
 .upload-icon {
@@ -240,7 +240,7 @@
 .model-select {
     padding: 1rem;
     background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    border: 2px solid #38bdf8;
     border-radius: 10px;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
@@ -251,15 +251,15 @@
 
 .model-select:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
 .description-textarea {
     min-height: 200px;
     padding: 1rem;
     background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    border: 2px solid #38bdf8;
     border-radius: 10px;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
@@ -270,8 +270,27 @@
 
 .description-textarea:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+/* Add visible border and focus for all text inputs */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    border: 2px solid #38bdf8;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.15);
+}
 }
 
 .description-textarea::placeholder {

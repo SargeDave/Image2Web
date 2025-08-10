@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // You can update the UI here to show logged-in state
             // and potentially redirect the user
             // Log login event to Firebase Analytics
- firebase.analytics().logEvent('login', { method: 'email_password' });
+            firebase.analytics().logEvent('login', { method: 'email_password' });
             alert("Logged in successfully!");
           })
           .catch((error) => {
@@ -186,6 +186,32 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Login Error: " + errorMessage);
           });
       });
+
+      // Forgot password handler
+      const forgotBtn = document.getElementById('forgotPasswordBtn');
+      const forgotMsg = document.getElementById('forgotMessage');
+      if (forgotBtn) {
+        forgotBtn.onclick = function() {
+          const email = document.getElementById('login-username').value;
+          if (!email) {
+            forgotMsg.style.display = 'block';
+            forgotMsg.style.color = '#f5576c';
+            forgotMsg.textContent = 'Please enter your email above first.';
+            return;
+          }
+          firebase.auth().sendPasswordResetEmail(email)
+            .then(function() {
+              forgotMsg.style.display = 'block';
+              forgotMsg.style.color = '#38bdf8';
+              forgotMsg.textContent = 'A password reset email has been sent!';
+            })
+            .catch(function(error) {
+              forgotMsg.style.display = 'block';
+              forgotMsg.style.color = '#f5576c';
+              forgotMsg.textContent = error.message;
+            });
+        };
+      }
     }
 });
 
