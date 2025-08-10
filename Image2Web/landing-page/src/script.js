@@ -158,6 +158,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Login form handler
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
+      // Google sign-in handler
+      const googleBtn = document.getElementById('googleSignInBtn');
+      if (googleBtn) {
+        googleBtn.onclick = function() {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+              // Signed in
+              closeLogin();
+              firebase.analytics().logEvent('login', { method: 'google' });
+              alert('Logged in with Google!');
+            })
+            .catch((error) => {
+              alert('Google Sign-In Error: ' + error.message);
+            });
+        };
+      }
       loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
