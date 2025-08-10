@@ -18,8 +18,8 @@
       <div class="sidebar-section">
         <h3>Navigation</h3>
         <a href="index.html" class="sidebar-item">🏠 Back to Home</a>
-        <a href="#" class="sidebar-item active">Workspace</a>
-        <a href="#" class="sidebar-item">Contributors</a>
+    <a href="workspace.html" class="sidebar-item active">Workspace</a>
+    <a href="../src/contributors.html" class="sidebar-item">Contributors</a>
       </div>
 
       <div class="user-profile">
@@ -91,6 +91,7 @@
   </div>
 
   <script>
+    // Workspace-specific logic
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const uploadedFile = document.getElementById('uploadedFile');
@@ -105,29 +106,24 @@
     let currentFile = null;
 
     uploadArea.addEventListener('click', () => fileInput.click());
-
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) handleFileUpload(file);
     });
-
     uploadArea.addEventListener('dragover', (e) => {
       e.preventDefault();
       uploadArea.classList.add('drag-over');
     });
-
     uploadArea.addEventListener('dragleave', (e) => {
       e.preventDefault();
       uploadArea.classList.remove('drag-over');
     });
-
     uploadArea.addEventListener('drop', (e) => {
       e.preventDefault();
       uploadArea.classList.remove('drag-over');
       const file = e.dataTransfer.files[0];
       if (file && file.type.startsWith('image/')) handleFileUpload(file);
     });
-
     function handleFileUpload(file) {
       currentFile = file;
       const reader = new FileReader();
@@ -140,24 +136,19 @@
       };
       reader.readAsDataURL(file);
     }
-
     removeFile.addEventListener('click', () => {
       currentFile = null;
       uploadedFile.classList.remove('show');
       fileInput.value = '';
       updateGenerateButton();
     });
-
     description.addEventListener('input', updateGenerateButton);
-
     function updateGenerateButton() {
       generateBtn.disabled = !(currentFile && description.value.trim().length > 0);
     }
-
     generateBtn.addEventListener('click', () => {
       if (currentFile && description.value.trim()) generateCode();
     });
-
     function generateCode() {
       const btn = generateBtn;
       const btnText = btn.querySelector('.btn-text');
@@ -174,7 +165,6 @@
         console.log('Model:', modelSelect.value);
       }, 3000);
     }
-
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes';
       const k = 1024;
@@ -182,6 +172,14 @@
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
+
+    // Connect logout button to shared logout logic if available
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn && typeof logout === 'function') {
+      logoutBtn.addEventListener('click', logout);
+    }
   </script>
+  <!-- Connect to shared navigation and logic -->
+  <script src="src/script.js"></script>
 </body>
 </html>
